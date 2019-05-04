@@ -1,0 +1,7 @@
+
+
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /t:library /out:C:\CLRDLL\clrPushExport.dll C:\CLRDLL\PushExport.cs
+
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /t:library /out:clrPushExport.dll PushExport.cs
+
+
