@@ -16,20 +16,33 @@ namespace Api.Dynamic
     {
         const int limit = 200000;
         static CacheSynchronized<string> store = new CacheSynchronized<string>(limit);
-        static table1col1Controller() {
+        static table1col1Controller()
+        {
             for (int i = 0; i < limit; i++) store.Add(i, Guid.NewGuid().ToString());
         }
 
-        void createDynamic() {
-            var dataType = new Type[] { typeof(string) };
-            var genericBase = typeof(List<>);
-            var combinedType = genericBase.MakeGenericType(dataType);
-            var listStringInstance = Activator.CreateInstance(combinedType);
-            var addMethod = listStringInstance.GetType().GetMethod("Add");
-            addMethod.Invoke(listStringInstance, new object[] { "Hello World" });
+        void createDynamic()
+        {
+            //var dataType = new Type[] { typeof(string) };
+            //var genericBase = typeof(List<>);
+            //var combinedType = genericBase.MakeGenericType(dataType);
+            //var listStringInstance = Activator.CreateInstance(combinedType,);
+            //var addMethod = listStringInstance.GetType().GetMethod("Add");
+            //addMethod.Invoke(listStringInstance, new object[] { "Hello World" });
 
-            var a = (new int[] { 1, 2, 3 }).AsQueryable().Where("it > 2").ToArray();  //.("@0.Contains(\"de\")");
-            var a2 = (listStringInstance as List<string>).AsQueryable().Where("it.Contains(\"rl9\")").ToArray();
+            //var a = (new int[] { 1, 2, 3 }).AsQueryable().Where("it > 2").ToArray();  //.("@0.Contains(\"de\")");
+            //var a2 = (listStringInstance as List<string>).AsQueryable().Where("it.Contains(\"rl9\")").ToArray();
+
+            object x = new Int32[7];
+            Type t = x.GetType();
+            object y = Array.CreateInstance(t.GetElementType(), 7);
+
+            Type t2 = typeof(int);
+            object y2 = Array.CreateInstance(t2, 7);
+
+            Type t3 = typeof(string);
+            object y3 = Array.CreateInstance(t3, 7);
+            for (int i = 0; i < 7; i++) (y3 as string[])[i] = Guid.NewGuid().ToString();
         }
 
         // GET api/values
