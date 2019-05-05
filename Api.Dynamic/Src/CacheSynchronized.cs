@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -60,9 +61,7 @@ namespace Api.Dynamic
         private int limit;
 
         public CacheSynchronized(int _limit)
-        {
-            Type genericType = typeof(CacheSynchronized<T>);
-
+        { 
             limit = _limit;
             List<T> ls = new List<T>(_limit) { };
             for (int i = 0; i < _limit; i++) ls.Add(default(T));
@@ -83,6 +82,26 @@ namespace Api.Dynamic
             {
                 cacheLock.ExitReadLock();
             }
+        }
+
+        public int[] Search(string keyWord)
+        {
+            int[] arr = new int[] { };
+            cacheLock.EnterReadLock();
+            try
+            {
+                List<int> ls = new List<int>() { };
+
+                //for (int i = 0; i < limit; i++) if (predicate(innerCache[i])) ls.Add(i);
+                var t = innerCache.Where("@0.Contains(\"cd\")").ToArray();
+
+                arr = ls.ToArray();
+            }
+            finally
+            {
+                cacheLock.ExitReadLock();
+            }
+            return arr;
         }
 
         public int[] Search(Func<T, bool> predicate)

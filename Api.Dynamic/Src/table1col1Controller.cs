@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Net;
 using System.Net.Http;
 using System.Net.WebSockets;
@@ -19,6 +20,18 @@ namespace Api.Dynamic
             for (int i = 0; i < limit; i++) store.Add(i, Guid.NewGuid().ToString());
         }
 
+        void createDynamic() {
+            var dataType = new Type[] { typeof(string) };
+            var genericBase = typeof(List<>);
+            var combinedType = genericBase.MakeGenericType(dataType);
+            var listStringInstance = Activator.CreateInstance(combinedType);
+            var addMethod = listStringInstance.GetType().GetMethod("Add");
+            addMethod.Invoke(listStringInstance, new object[] { "Hello World" });
+
+            var a = (new int[] { 1, 2, 3 }).AsQueryable().Where("it > 2").ToArray();  //.("@0.Contains(\"de\")");
+            var a2 = (listStringInstance as List<string>).AsQueryable().Where("it.Contains(\"rl9\")").ToArray();
+        }
+
         // GET api/values
         public IEnumerable<int> Get()
         {
@@ -34,8 +47,11 @@ namespace Api.Dynamic
         // POST api/values
         public IEnumerable<int> Post([FromBody]CacheRequestMessage value)
         {
-            int[] a = store.Search(x => x.Contains("abc"));
-            return a;
+            //int[] a = store.Search(x => x.Contains("abc"));
+
+            createDynamic();
+
+            return new int[] { };
         }
 
         // PUT api/values/5
