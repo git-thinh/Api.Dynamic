@@ -14,7 +14,7 @@ namespace Api.Dynamic
             var cache = new StoreCache();
 
             //config.Services.Replace(typeof(IAssembliesResolver), new CustomAssemblyResolver());
-            config.Services.Replace(typeof(IHttpControllerSelector), new ControllersResolver(config, cache));
+            //config.Services.Replace(typeof(IHttpControllerSelector), new ControllersResolver(config, cache));
 
             //var container = new UnityContainer();
             //container.RegisterType<IUserRepository, DbUserRepository>(new HierarchicalLifetimeManager());
