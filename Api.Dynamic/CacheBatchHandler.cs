@@ -46,7 +46,7 @@ namespace Api.Dynamic
 
                 string path = "/api/" + r.Field.Replace(".", string.Empty).ToLower() + "?RequestId=" + r.RequestId + "&RequestIndex=" + r.Index;
                 var subRequestUri = new Uri(request.RequestUri, path);
-                var req = new HttpRequestMessage(new HttpMethod("GET"), subRequestUri);
+                var req = new HttpRequestMessage(new HttpMethod("POST"), subRequestUri);
 
                 // Add the body
                 var content = new StringContent(JsonConvert.SerializeObject(r), Encoding.UTF8, ApplicationJsonContentType);

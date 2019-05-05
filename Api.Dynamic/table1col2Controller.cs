@@ -26,9 +26,9 @@ namespace Api.Dynamic
         }
 
         // POST api/values
-        public string Post([FromBody]string value)
+        public IEnumerable<int> Post([FromBody]CacheRequestMessage value)
         {
-            return "value = " + value;
+            return new int[] { 0, 1 };
         }
 
         // PUT api/values/5
