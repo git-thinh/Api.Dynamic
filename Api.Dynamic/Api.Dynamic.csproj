@@ -90,19 +90,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="BatchHandler.cs" />
-    <Compile Include="Cache.cs" />
-    <Compile Include="ControllersResolver.cs" />
-    <Compile Include="CacheService.cs" />
+    <Compile Include="Src\BatchHandler.cs" />
+    <Compile Include="Src\Cache.cs" />
+    <Compile Include="Src\CacheSynchronized.cs" />
+    <Compile Include="Src\ControllersResolver.cs" />
+    <Compile Include="Src\CacheService.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="CacheBatchHandler.cs" />
-    <Compile Include="JsonBatchHandler.cs" />
+    <Compile Include="Src\CacheBatchHandler.cs" />
+    <Compile Include="Src\JsonBatchHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="table1col1Controller.cs" />
-    <Compile Include="table1col2Controller.cs" />
-    <Compile Include="UserController.cs" />
+    <Compile Include="Src\table1col1Controller.cs" />
+    <Compile Include="Src\table1col2Controller.cs" />
+    <Compile Include="Src\UserController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="test\sse-iis.html" />
@@ -116,7 +117,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Code\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

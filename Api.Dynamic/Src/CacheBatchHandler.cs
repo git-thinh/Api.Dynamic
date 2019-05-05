@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Batch;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
 namespace Api.Dynamic
@@ -18,16 +17,13 @@ namespace Api.Dynamic
         private const string TextJson = "text/json";
         private const string ApplicationJsonContentType = "application/json";
 
-        /// <inheritdoc />
         public CacheBatchHandler(HttpServer httpServer) : base(httpServer)
         {
             SupportedContentTypes.Add(TextJson);
             SupportedContentTypes.Add(ApplicationJsonContentType);
         }
 
-        /// <inheritdoc />
-        public override async Task<IList<HttpRequestMessage>> ParseBatchRequestsAsync(HttpRequestMessage request,
-            CancellationToken cancellationToken)
+        public override async Task<IList<HttpRequestMessage>> ParseBatchRequestsAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
@@ -65,8 +61,7 @@ namespace Api.Dynamic
         }
 
         /// <inheritdoc />
-        public override async Task<HttpResponseMessage> CreateResponseMessageAsync(IList<HttpResponseMessage> responses,
-            HttpRequestMessage request, CancellationToken cancellationToken)
+        public override async Task<HttpResponseMessage> CreateResponseMessageAsync(IList<HttpResponseMessage> responses, HttpRequestMessage request, CancellationToken cancellationToken)
         {
             if (responses == null)
             {
@@ -95,7 +90,11 @@ namespace Api.Dynamic
                 if (subResponse.StatusCode == HttpStatusCode.OK)
                 {
                     res.Ok = true;
-                    if (subResponse.Content != null) res.Output = await subResponse.Content.ReadAsAsync<int[]>();
+                    if (subResponse.Content != null)
+                    {
+                        res.Output = await subResponse.Content.ReadAsAsync<int[]>();
+                        res.Total = res.Output.Length;
+                    }
                 }
                 else
                 {
@@ -122,6 +121,7 @@ namespace Api.Dynamic
         public CacheResponseMessage()
         {
             Output = new int[] { };
+            Total = 0;
             Ok = false;
         }
 
@@ -133,8 +133,8 @@ namespace Api.Dynamic
         public int Code { get; set; }
 
         public string Message { get; set; }
+        public int Total { get; set; }
 
         public int[] Output { get; set; }
     }
-
 }
