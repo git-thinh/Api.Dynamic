@@ -84,7 +84,7 @@ namespace Api.Dynamic
             }
         }
 
-        public int[] Search(string keyWord)
+        public int[] Search(string condition)
         {
             int[] arr = new int[] { };
             cacheLock.EnterReadLock();
@@ -93,9 +93,9 @@ namespace Api.Dynamic
                 List<int> ls = new List<int>() { };
 
                 //for (int i = 0; i < limit; i++) if (predicate(innerCache[i])) ls.Add(i);
-                var t = innerCache.Where("@0.Contains(\"cd\")").ToArray();
-
-                arr = ls.ToArray();
+                //var t = innerCache.Where("@0.Contains(\"cd\")").ToArray();
+                //arr = innerCache.Where(condition).ToArray();
+                //arr = ls.ToArray();
             }
             finally
             {
@@ -103,6 +103,22 @@ namespace Api.Dynamic
             }
             return arr;
         }
+
+        public T[] SearchDynamic(string condition)
+        {
+            T[] arr = new T[] { };
+            cacheLock.EnterReadLock();
+            try
+            {
+                arr = innerCache.Where(condition).ToArray();
+            }
+            finally
+            {
+                cacheLock.ExitReadLock();
+            }
+            return arr;
+        }
+
 
         public int[] Search(Func<T, bool> predicate)
         {

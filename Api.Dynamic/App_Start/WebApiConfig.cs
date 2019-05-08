@@ -45,6 +45,11 @@ namespace Api.Dynamic
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            //config.Routes.MapHttpRoute(
+            //    name: "DefaultApi",
+            //    //routeTemplate: "api/{controller}/{id}", defaults: new { id = RouteParameter.Optional }
+            //    routeTemplate: "api/{controller}/{_functional}", defaults: new { _functional = RouteParameter.Optional }
+            //);
 
         }
 
