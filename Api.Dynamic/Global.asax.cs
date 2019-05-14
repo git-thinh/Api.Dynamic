@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http.Formatting;
 using System.ServiceModel.Activation;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,6 +16,9 @@ namespace Api.Dynamic
         { 
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteTable.Routes.Add(new ServiceRoute("message", new CacheServiceFactory(), typeof(CacheService)));
+
+            GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings.Add(new QueryStringMapping("json", "true", "application/json"));
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)

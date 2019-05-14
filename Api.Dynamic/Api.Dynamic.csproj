@@ -14,7 +14,7 @@
     <RootNamespace>Api.Dynamic</RootNamespace>
     <AssemblyName>Api.Dynamic</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -103,10 +103,10 @@
     <Compile Include="Src\DynamicLinq.cs" />
     <Compile Include="Src\JsonBatchHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Src\table1col3Controller.cs" />
-    <Compile Include="Src\table1col1Controller.cs" />
-    <Compile Include="Src\table1col2Controller.cs" />
-    <Compile Include="Src\UserController.cs" />
+    <Compile Include="Controllers\table1col3Controller.cs" />
+    <Compile Include="Controllers\table1col1Controller.cs" />
+    <Compile Include="Controllers\table1col2Controller.cs" />
+    <Compile Include="Controllers\UserController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="test\sse-iis.html" />
@@ -120,9 +120,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Code\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -138,7 +136,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56049</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:3000</IISUrl>
+          <IISUrl>http://localhost:56049/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

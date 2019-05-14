@@ -16,9 +16,22 @@ namespace Api.Dynamic
     {
         const int limit = 200000;
         static CacheSynchronized<string> store = new CacheSynchronized<string>(limit);
+
+        static readonly ClientWebSocket _client = new ClientWebSocket();
         static table1col1Controller()
         {
             for (int i = 0; i < limit; i++) store.Add(i, Guid.NewGuid().ToString());
+            try
+            {
+                _client.ConnectAsync(new Uri("ws://localhost:56049/message"), CancellationToken.None).Wait();
+                if (_client.State == WebSocketState.Open)
+                {
+                    string msg = Guid.NewGuid().ToString();
+                    ArraySegment<byte> bytesToSend = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(msg));
+                    _client.SendAsync(bytesToSend, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
+                }
+            }
+            catch { }
         }
 
         void createDynamic()
@@ -64,7 +77,14 @@ namespace Api.Dynamic
 
             createDynamic();
 
-            return new int[] { };
+            if (_client.State == WebSocketState.Open)
+            {
+                string msg = Guid.NewGuid().ToString();
+                ArraySegment<byte> bytesToSend = new ArraySegment<byte>(System.Text.Encoding.UTF8.GetBytes(msg));
+                _client.SendAsync(bytesToSend, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
+            }
+
+            return new int[] { 3, 4, 5, 6 };
         }
 
         // PUT api/values/5

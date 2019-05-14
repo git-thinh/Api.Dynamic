@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 
@@ -81,109 +82,16 @@ namespace Api.Dynamic
 
     public class CacheService : WebSocketService
     {
-        private static ConcurrentDictionary<string, WebSocketService> m_storeFields = new ConcurrentDictionary<string, WebSocketService>() { };
-        private static string m_storeIDs = string.Empty;
-        private static string[] m_fields = new string[] { };
-
-        private static ConcurrentDictionary<string, WebSocketService> m_searchSender = new ConcurrentDictionary<string, WebSocketService>() { };
-        private static ConcurrentDictionary<string, oCacheSearchFieldRseult> m_searchItemResults = new ConcurrentDictionary<string, oCacheSearchFieldRseult>() { };
-        private static ConcurrentDictionary<string, int> m_searchItemTotal = new ConcurrentDictionary<string, int>() { };
-        private static ConcurrentDictionary<string, int> m_searchItemCounter = new ConcurrentDictionary<string, int>() { };
-
-        void fetchCacheItems(string conditions)
-        {
-            try
-            {
-                oCacheSearchField[] searchs = JsonConvert.DeserializeObject<oCacheSearchField[]>(conditions);
-                if (searchs.Length > 0)
-                {
-                    string searchId = Guid.NewGuid().ToString();
-
-                    m_searchSender.TryAdd(searchId, this);
-                    m_searchItemTotal.TryAdd(searchId, searchs.Length);
-
-                    string find; WebSocketService cache;
-                    for (int i = 0; i < searchs.Length; i++)
-                    {
-                        searchs[i].SearchId = searchId;
-                        find = JsonConvert.SerializeObject(searchs[i]);
-                        if (m_storeFields.TryGetValue(searchs[i].Field, out cache)) {
-                            try
-                            {
-                                cache.Send(find);
-                            }
-                            catch(Exception exx) {
-                                m_searchItemResults.TryAdd(searchId + searchs[i].Index, new oCacheSearchFieldRseult() {
-                                    Ok = false,
-                                    Message = exx.Message,
-                                    Index = searchs[i].Index,
-                                    SearchId = searchId
-                                });
-
-                                if (m_searchItemCounter.ContainsKey(searchId)) {
-                                    int counter = 0;
-                                    if (m_searchItemCounter.TryGetValue(searchId, out counter))
-                                        m_searchItemCounter.TryUpdate(searchId, counter + 1, counter);
-                                } else {
-                                    m_searchItemCounter.TryAdd(searchId, 1);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch(Exception ex) {
-                this.Send(new oCacheSearchResult(false, "EXCEPTION", this.WebSocketContext.SecWebSocketKey) { Output = ex.Message, Conditions = conditions }.toJson());
-            }
+        public override void OnOpen() {
+            Debug.WriteLine("CONNECTED ...");
+        }
+        public override void OnMessage(string message) {
+            Debug.WriteLine("->: " + message);
         }
 
-        void processMessage(string m)
-        {
-            if (string.IsNullOrWhiteSpace(m)) return;
-            m = m.Trim();
-            if (m.Length < 2) return;
-
-            //Send BroadCast query data from end-user
-            if (m[0] == '[' && m[m.Length - 1] == ']')
-            {
-                fetchCacheItems(m);
-                return;
-            }
-
-            string code = m.ToUpper();
-            switch (code)
-            {
-                case "TABLE":
-                    this.Send(new oCacheSearchResult(true, code, this.WebSocketContext.SecWebSocketKey) { Output = JsonConvert.SerializeObject(m_fields) }.toJson());
-                    break;
-                default:
-                    switch (m[0])
-                    {
-                        case '#':
-                            // Register TABLE.FIELD_NAME by text is #TABLE.FIELD_NAME
-                            string field = m.Substring(1).ToUpper().Trim();
-                            if (field.Length > 0)
-                            {
-                                if (m_storeFields.ContainsKey(field))
-                                {
-                                    WebSocketService val;
-                                    m_storeFields.TryRemove(field, out val);
-                                }
-                                m_storeFields.TryAdd(field, this);
-                                lock (m_storeIDs) m_storeIDs += ";" + this.WebSocketContext.SecWebSocketKey;
-                            }
-                            break; 
-                    }
-                    break;
-            }
-        }
-
-        public override void OnOpen() { }
-        public override void OnMessage(string message) => processMessage(message);
         public override void OnMessage(Byte[] buffer) { }
         protected override void OnClose()
         {
-            lock (m_storeIDs) m_storeIDs.Replace(";" + this.WebSocketContext.SecWebSocketKey, string.Empty);
             base.OnClose();
         }
         protected override void OnError()
